@@ -20,6 +20,10 @@ export const userApi = {
     const url = `/users/${id}`;
     return axiosClient.get(url);
   },
+  search(keyword: any): Promise<IUser> {
+    const url = `/users/search?keyword=${keyword}`;
+    return axiosClient.get(url);
+  },
   add(data: IUser): Promise<IUser> {
     const url = `/users`;
     return axiosClient.post(url, data);
@@ -28,8 +32,8 @@ export const userApi = {
     const url = `/users`;
     return axiosClient.put(url, data);
   },
-  updateRole(data: any, id: string): Promise<any> {
-    const url = `/update_role/${id}`;
+  updateRole(data: any, id: any): Promise<any> {
+    const url = `/users/update_role/${id}`;
     return axiosClient.put(url, data);
   },
   remove(id: string | number): Promise<any> {

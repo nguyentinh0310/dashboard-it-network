@@ -1,3 +1,4 @@
+import { userApi } from "api/userApi";
 import React, { ChangeEvent, useRef, useState } from "react";
 
 export interface SearchTermProps {
@@ -15,11 +16,10 @@ const SearchTerm = ({ onSubmit }: SearchTermProps) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    typingTimeoutRef.current = setTimeout(() => {
+    typingTimeoutRef.current = setTimeout(async () => {
       const formValues = e.target.value;
-
-      onSubmit(formValues);
-    }, 300);
+      onSubmit?.(formValues);
+    }, 500);
   };
 
   return (

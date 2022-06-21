@@ -10,7 +10,6 @@ import { persistor, store } from "./app/store";
 import "./index.css";
 import { history } from "./utils";
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

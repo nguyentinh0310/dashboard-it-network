@@ -36,8 +36,8 @@ const AddEditPage = () => {
 
   const handleFormSubmit = async (formValues: IUser) => {
     if (isEdit) {
-      await userApi.updateRole(formValues, userId);
-      console.log(formValues);
+      const role = Number(formValues.role)
+      await userApi.updateRole({role: role }, userId);
     } else {
       await userApi.add(formValues);
     }

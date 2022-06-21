@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { postApi } from "api/post-api";
 import { IPost } from "models";
 
-export const fetchListPost: any = createAsyncThunk("post/fetch", async () => {
-  const data = await postApi.getAll();
+export const fetchListPost: any = createAsyncThunk("post/fetch", async (params?:any) => {
+  const data = await postApi.getAll(params);
   return data;
 });
 

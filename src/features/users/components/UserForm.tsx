@@ -53,6 +53,7 @@ export default function UserForm({
               <label className="form-label">Vai trò</label>
               <select
                 className="form-select"
+                name="role"
                 value={role}
                 onChange={handleOnChange}
               >

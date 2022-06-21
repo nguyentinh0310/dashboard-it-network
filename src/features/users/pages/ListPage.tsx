@@ -1,23 +1,31 @@
 import { userApi } from "api/userApi";
 import { useAppDispatch, useAppSelector } from "app/hooks";
+import { fetchListUser, fetchListUserLimit, searchUser } from "app/userSlice";
+import { Pagination } from "components";
 import { IUser } from "models";
 import queryString from "query-string";
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import swal from "sweetalert";
-import SearchTerm from "../components/SearchTerm";
 import { ModalUser } from "../components/ModalUser";
-import { fetchListUser } from "app/userSlice";
-import { Pagination } from "components";
+import SearchTerm from "../components/SearchTerm";
 
 const ListPage = () => {
   const { loading, items, totalRows } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.auth);
+
   const dispatch = useAppDispatch();
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [show, setShow] = useState(false);
+
+  const handleShow = (user: IUser) => {
+    setShow(true);
+    console.log(user._id);
+  };
 
   const queryParams = useMemo(() => {
     const params: any = queryString.parse(location.search);
@@ -53,12 +61,12 @@ const ListPage = () => {
     });
   };
 
-  const handleSearchForm = (formValues: any) => {
-    console.log(formValues);
-    // history.push({
-    //   pathname: history.location.pathname,
-    //   search: queryString.stringify(formValues),
-    // });
+  const handleSearchForm = async (formValues: any) => {
+    setTimeout(async () => {
+      await dispatch(searchUser(formValues));
+    }, 500);
+
+
   };
 
   const handleEditUser = (user: IUser) => {
@@ -75,9 +83,13 @@ const ListPage = () => {
         dangerMode: true,
       }).then(async (willDelete) => {
         if (willDelete) {
+          // if (user?.role === 0) {
           await userApi.removeMany(selectedItems);
+          // } else {
+          //   toast.error("Không được phép xóa admin");
+          // }
           setSelectedItems([]);
-          dispatch(fetchListUser());
+          dispatch(fetchListUserLimit());
         }
       });
     }
@@ -120,6 +132,7 @@ const ListPage = () => {
             <th>ID</th>
             <th>Họ Tên</th>
             <th>Tài khoản</th>
+            <th>Vai trò</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -153,15 +166,17 @@ const ListPage = () => {
                 <td>{user._id}</td>
                 <td>{user.fullname}</td>
                 <td>{user.account}</td>
+                <td>{user.role === 1 ? "Admin" : "Người dùng"}</td>
                 <td>
                   <button
                     className="btn btn-outline-warning btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
+                    onClick={() => handleShow(user)}
                   >
                     <i className="fa-solid fa-eye"></i>
                   </button>
-                    <ModalUser user={user} />
+                  {show && (
+                    <ModalUser user={user} setShow={setShow} show={show} />
+                  )}
                   &nbsp;
                   <button
                     className="btn btn-outline-primary btn-sm"
@@ -169,7 +184,6 @@ const ListPage = () => {
                   >
                     <i className="fa-solid fa-pen-to-square"></i>
                   </button>
-                  &nbsp;
                 </td>
               </tr>
             ))}

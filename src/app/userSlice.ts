@@ -18,6 +18,15 @@ export const fetchListUserLimit: any = createAsyncThunk(
   }
 );
 
+export const searchUser: any = createAsyncThunk(
+  "user/keyword",
+  async (keyword?: any) => {
+    const data = await userApi.search(keyword);
+    return data;
+  }
+);
+
+
 export interface UsersState {
   items: IUser[];
   totalRows: number;
@@ -46,6 +55,10 @@ const userSlice = createSlice({
     [fetchListUserLimit.fulfilled]: (state, action: PayloadAction<any>) => {
       state.items = action.payload.data;
       state.totalRows = action.payload.totalRows;
+      state.loading = false;
+    },
+    [searchUser.fulfilled]: (state, action: PayloadAction<any>) => {
+      state.items = action.payload;
       state.loading = false;
     },
     [fetchListUser.rejected]: (state) => {
