@@ -20,12 +20,6 @@ const ListPage = () => {
   const location = useLocation();
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [show, setShow] = useState(false);
-
-  const handleShow = (user: IUser) => {
-    setShow(true);
-    console.log(user._id);
-  };
 
   const queryParams = useMemo(() => {
     const params: any = queryString.parse(location.search);
@@ -64,9 +58,7 @@ const ListPage = () => {
   const handleSearchForm = async (formValues: any) => {
     setTimeout(async () => {
       await dispatch(searchUser(formValues));
-    }, 500);
-
-
+    }, 300);
   };
 
   const handleEditUser = (user: IUser) => {
@@ -170,13 +162,12 @@ const ListPage = () => {
                 <td>
                   <button
                     className="btn btn-outline-warning btn-sm"
-                    onClick={() => handleShow(user)}
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal" data-bs-id={`${user._id}`}
                   >
                     <i className="fa-solid fa-eye"></i>
                   </button>
-                  {show && (
-                    <ModalUser user={user} setShow={setShow} show={show} />
-                  )}
+                  <ModalUser user={user} />
                   &nbsp;
                   <button
                     className="btn btn-outline-primary btn-sm"
